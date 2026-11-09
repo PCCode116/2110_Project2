@@ -7,5 +7,9 @@ F005|Room 101|Engineering Building|Classroom
 F006|Computer Lab B|Engineering Building|Computer Lab
 F007|Room 101|Business Building|Classroom
 F008|Fitness Center|Gym|Recreation
-F009|Room 205|Science Building|Classroom
-F010|Research Help Desk|Library|Library
+F009|Room 205|Science Building|Classroom  
+F010|Research Help Desk|Library|Library //b
+F011|Moonbase|Moon|Crater
+F0121|Main Reading Room|Library|Library
+F013|Room 101|Library|Library|Library
+F001|Fitness Center|Library|Library
