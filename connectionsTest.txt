@@ -1,0 +1,10 @@
+# BuildingA|BuildingB
+Library|Hospital
+Library|Business Building
+Student Union|Science Building
+Student Union|Gym
+Science Building|Engineering Building
+Business Building|Gym
+Gym|Gym
+Science Building|Moon
+Hospital|Gym
