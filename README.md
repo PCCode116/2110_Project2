@@ -27,7 +27,7 @@ And execute ./program
 5.GitHub
 6. Additional Documentation
 Group Contribution
- Group Contribution Report https://docs.google.com/document/d/1gUp10woL3H9cnVbvGaLIpKB_KVPvBbfMH6PUzlwcuv8/edit?usp=sharing
+ Group Contribution Report [https://docs.google.com/document/d/1gUp10woL3H9cnVbvGaLIpKB_KVPvBbfMH6PUzlwcuv8/edit?usp=sharing](https://docs.google.com/document/d/1qFEsmWzy6DayJnHQ4x-RyZ4CrF57N_DXrhIReCeMmeo/edit?usp=sharing)
 Design Doc
 Design Document https://docs.google.com/document/d/1_fVsl_vI7iaezZd-ou467czktSGIk_77zL9BcfWTdm0/edit?usp=sharing
 Test Result
