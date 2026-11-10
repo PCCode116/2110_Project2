@@ -2,9 +2,10 @@
 #include <fstream>
 #include <string>    
 #include <vector>
+#include <facilitieHash.h>
 #include <campusGraph.h>
 using namespace std;
-//g++ -I include src/main.cpp src/campusGraph.cpp -o program
+//g++ -I include src/main.cpp src/campusGraph.cpp src/facilitieHash.cpp -o program
 bool sameName(const string& name1, const string& name2) {
     if(name1.size() != name2.size()) {
         return false;
@@ -145,7 +146,7 @@ void loadConnections(const string& filename, vector<string>& buildings, vector<v
     cout << "Connections loaded: " << accepted << " accepted, " << rejected << " rejected." << endl;
 
 }
-void loadFacilities(const string& filename, const vector<string>& buildings) {
+void loadFacilities(const string& filename, FacilitiesHash& facilitiesHash, const vector<string>& buildings) {
     ifstream facilityFile(filename);
     int accepted = 0;
     int rejected = 0;
@@ -176,6 +177,11 @@ void loadFacilities(const string& filename, const vector<string>& buildings) {
             continue;
         }
         size_t third = facility.find('|', second + 1);
+        if(facility.find('|', third + 1) != string::npos) {
+            cout << "Too much fields. Input must be in the format: ID|Name|Building|Category" << endl;
+            rejected++;
+            continue;
+        }
         if(third == string::npos) {
             cout << "Warning: Invalid facility format in file name: " << filename << ", line: " << line << endl;
             rejected++;
@@ -191,7 +197,7 @@ void loadFacilities(const string& filename, const vector<string>& buildings) {
             rejected++;
             continue;
         }
-        for (char c : facilityID) {
+        for (char& c : facilityID) {
             c = static_cast<char>(toupper(c));
         }
         if(facilityID.length() != 4 || facilityID[0] != 'F' || !isdigit(facilityID[1]) || !isdigit(facilityID[2]) || !isdigit(facilityID[3])) {
@@ -211,10 +217,18 @@ void loadFacilities(const string& filename, const vector<string>& buildings) {
         if duplicate facility ID is found, print a warning and reject the entry.
         insert the valid facility into the facilities hashtable
         */
+        if(facilitiesHash.search(facilityID) != nullptr) {
+            cout << "Warning: Duplicate facility ID in file name: " << filename << ", line: " << line << endl;
+            rejected++;
+            continue;
+        }
+        facilitiesHash.insert(facilityID, facilityName, buildingName, facilityCategory);
         accepted++;
     }
     facilityFile.close();
     cout << "Facilities loaded: " << accepted << " accepted, " << rejected << " rejected." << endl;
+    facilitiesHash.displayStats();
+
 }
 void loadDepartments(const string& filename) {
     ifstream departmentFile(filename);
@@ -278,18 +292,19 @@ void loadDepartments(const string& filename) {
     cout << "Departments loaded: " << accepted << " accepted, " << rejected << " rejected." << endl;
 }
 int main(){
+    FacilitiesHash facilitiesHash;
     vector<string> buildings;
-    vector<vector<int>> adjacencyList;
+    vector<vector<int>> adjacencyList; 
     loadBuildingName("data/BuildingName.txt", buildings);
     adjacencyList.resize(buildings.size());
     loadConnections("data/connections.txt", buildings, adjacencyList);
-    loadFacilities("data/Facilities.txt", buildings);
+    loadFacilities("data/Facilities.txt", facilitiesHash, buildings);
     loadDepartments("data/Departments.txt");
 
     CampusGraph campusGraph;
     int choice;
+    string facilityID;
     string startingBuilding;
-
     while (choice != 10){
         cout << "==== Campus Navigation and Facilities System ====" << endl;
         cout << "1. Visit all facilities: " << endl;
@@ -306,11 +321,19 @@ int main(){
         cin >> choice;
         switch(choice) {
             case 1:
-                // Navigate Campus
+                facilitiesHash.displayFacilities();
                 break;
-            case 2:
-                // View Facilities
+            case 2:{
+                cout << "Enter the facility ID: ";
+                cin >> facilityID;
+                facility* result = facilitiesHash.search(facilityID);
+                if (result) {
+                    cout << "Facility ID: " << result->id << "| Name: " << result->name << "| Building: " << result->buildingName << "| Category: " << result->category << endl;
+                } else {
+                    cout << "Facility with ID " << facilityID << " not found." << endl;
+                }
                 break;
+            }
             case 3:
                 campusGraph.displayGraph(buildings, adjacencyList);
                 break;
